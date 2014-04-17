@@ -1,4 +1,4 @@
-﻿<controls:BaseModalWindow x:Class="MediaBrowser.Plugins.DefaultTheme.PlaylistViewer.PlayListViewerWindow"
+﻿<controls:BaseModalWindow x:Class="MediaBrowser.Plugins.DefaultTheme.NowPlayingMenu.NowPlayingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MediaBrowser.Theater.Presentation.Controls;assembly=MediaBrowser.Theater.Presentation"
@@ -6,7 +6,7 @@
     <Window.Resources>
         <Storyboard x:Key="ClosingModalStoryboard">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentGrid"  Storyboard.TargetProperty="Width">
-                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="380"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="500"/>
                 <EasingDoubleKeyFrame Value="0" KeyTime="00:00:0.5">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <QuinticEase EasingMode="EaseInOut"/>
@@ -17,7 +17,7 @@
         <Storyboard x:Key="OpeningViewGridStoryboard">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ViewGrid" Storyboard.TargetProperty="Width">
                 <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                <EasingDoubleKeyFrame Value="380" KeyTime="00:00:0.5">
+                <EasingDoubleKeyFrame Value="500" KeyTime="00:00:0.5">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <QuinticEase EasingMode="EaseInOut"/>
                     </EasingDoubleKeyFrame.EasingFunction>
@@ -32,7 +32,7 @@
         <Storyboard x:Key="OpeningSortGridStoryboard">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SortGrid" Storyboard.TargetProperty="Width">
                 <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                <EasingDoubleKeyFrame Value="380" KeyTime="00:00:0.5">
+                <EasingDoubleKeyFrame Value="500" KeyTime="00:00:0.5">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <QuinticEase EasingMode="EaseInOut"/>
                     </EasingDoubleKeyFrame.EasingFunction>
@@ -45,7 +45,38 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
-    <Grid>
-        
+    <Grid x:Name="MainGrid">
+        <Grid Style="{StaticResource ModalOverlayStyle}">
+
+        </Grid>
+
+        <Grid x:Name="ContentGrid" Style="{StaticResource DefaultThemeModalContentStyle}" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+            <!-- Animation -->
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Width">
+                                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                                <EasingDoubleKeyFrame Value="500" KeyTime="00:00:0.5">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <QuinticEase EasingMode="EaseInOut"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
+
+            <Button x:Name="BtnClose" Style="{StaticResource ModalCloseButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="40" Margin="35 0 0 0" TabIndex="99"/>
+
+            <Grid Margin="0 30 0 0" MinWidth="500">
+            </Grid>
+        </Grid>
+
+        <Grid.LayoutTransform>
+            <ScaleTransform ScaleX="{Binding Path=ContentScale}" ScaleY="{Binding Path=ContentScale}" CenterX="0" CenterY="0" />
+        </Grid.LayoutTransform>
     </Grid>
 </controls:BaseModalWindow>

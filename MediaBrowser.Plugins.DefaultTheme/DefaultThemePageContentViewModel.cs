@@ -1,9 +1,7 @@
-﻿using MediaBrowser.Common;
-using MediaBrowser.Model.ApiClient;
+﻿using MediaBrowser.Model.ApiClient;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.DefaultTheme.UserProfileMenu;
 using MediaBrowser.Theater.Interfaces;
 using MediaBrowser.Theater.Interfaces.Configuration;
 using MediaBrowser.Theater.Interfaces.Navigation;
@@ -12,9 +10,6 @@ using MediaBrowser.Theater.Interfaces.Presentation;
 using MediaBrowser.Theater.Interfaces.Session;
 using MediaBrowser.Theater.Interfaces.ViewModels;
 using System;
-using System.Globalization;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace MediaBrowser.Plugins.DefaultTheme
@@ -37,6 +32,8 @@ namespace MediaBrowser.Plugins.DefaultTheme
             SessionManager.UserLoggedOut += SessionManager_UserLoggedOut;
 
             _config.UserConfigurationUpdated += _config_UserConfigurationUpdated;
+
+            ShowNowPlayingButton = true;
         }
 
         void _config_UserConfigurationUpdated(object sender, UserConfigurationUpdatedEventArgs e)
@@ -203,7 +200,7 @@ namespace MediaBrowser.Plugins.DefaultTheme
             }
         }
 
-        private bool _showSearchButton = false;
+        private bool _showSearchButton;
         public bool ShowSearchButton
         {
             get { return _showSearchButton; }
@@ -217,6 +214,24 @@ namespace MediaBrowser.Plugins.DefaultTheme
                 if (changed)
                 {
                     OnPropertyChanged("ShowSearchButton");
+                }
+            }
+        }
+
+        private bool _showNowPlayingButton;
+        public bool ShowNowPlayingButton 
+        {
+            get { return _showNowPlayingButton; }
+
+            set
+            {
+                var changed = _showNowPlayingButton != value;
+
+                _showNowPlayingButton = value;
+
+                if (changed)
+                {
+                    OnPropertyChanged("ShowNowPlayingButton");
                 }
             }
         }

@@ -6,6 +6,7 @@ using MediaBrowser.Model.ApiClient;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.DefaultTheme.ListPage;
+using MediaBrowser.Plugins.DefaultTheme.NowPlayingMenu;
 using MediaBrowser.Plugins.DefaultTheme.UserProfileMenu;
 using MediaBrowser.Theater.Interfaces;
 using MediaBrowser.Theater.Interfaces.Presentation;
@@ -23,6 +24,7 @@ namespace MediaBrowser.Plugins.DefaultTheme
 
         public ICommand UserCommand { get; private set; }
         public ICommand LogoutCommand { get; private set; }
+        public ICommand NowPlayingCommand { get; private set; }
 
         private bool _displayPreferencesEnabled;
         public bool DisplayPreferencesEnabled
@@ -82,6 +84,7 @@ namespace MediaBrowser.Plugins.DefaultTheme
 
             UserCommand = new RelayCommand(i => ShowUserMenu());
             LogoutCommand = new RelayCommand(i => Logout());
+            NowPlayingCommand = new RelayCommand(i => ShowNowPlaying());
 
             PowerOptionsEnabled = true;
         }
@@ -112,6 +115,11 @@ namespace MediaBrowser.Plugins.DefaultTheme
             userProfileWindow.ShowModal(PresentationManager.Window);
         }
 
+        protected virtual void ShowNowPlaying()
+        {
+            var nowPlayingWindow = new NowPlayingWindow();
+            nowPlayingWindow.ShowModal(PresentationManager.Window);
+        }
 
         protected async void Logout()
         {
