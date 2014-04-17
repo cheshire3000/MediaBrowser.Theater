@@ -19,13 +19,14 @@ namespace MediaBrowser.Plugins.DefaultTheme
         private readonly IImageManager _imageManager;
         private readonly ITheaterConfigurationManager _config;
 
-        public DefaultThemePageContentViewModel(INavigationService navigationService, ISessionManager sessionManager, IApiClient apiClient, IImageManager imageManager, IPresentationManager presentation, IPlaybackManager playbackManager, ILogger logger, ITheaterApplicationHost appHost, IServerEvents serverEvents, ITheaterConfigurationManager config)
+        public DefaultThemePageContentViewModel(INavigationService navigationService, ISessionManager sessionManager, IApiClient apiClient, IImageManager imageManager, IPresentationManager presentation, 
+            IPlaybackManager playbackManager, ILogger logger, ITheaterApplicationHost appHost, IServerEvents serverEvents, ITheaterConfigurationManager config)
             : base(navigationService, sessionManager, playbackManager, logger, appHost, apiClient, presentation, serverEvents)
         {
             _imageManager = imageManager;
             _config = config;
 
-            MasterCommands = new DefaultThemePageMasterCommandsViewModel(navigationService, sessionManager, presentation, apiClient, logger, appHost, serverEvents, imageManager);
+            MasterCommands = new DefaultThemePageMasterCommandsViewModel(navigationService, sessionManager, presentation, apiClient, logger, appHost, serverEvents, imageManager, playbackManager);
 
             NavigationService.Navigated += NavigationService_Navigated;
             SessionManager.UserLoggedIn += SessionManager_UserLoggedIn;

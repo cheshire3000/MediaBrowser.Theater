@@ -55,6 +55,8 @@ namespace MediaBrowser.Theater.Implementations.Playback
             get { return _mediaPlayers; }
         }
 
+        public IMediaPlayer CurrentMediaPlayer { get; private set; }
+
         /// <summary>
         /// Plays the specified options.
         /// </summary>
@@ -102,8 +104,8 @@ namespace MediaBrowser.Theater.Implementations.Playback
         {
             if (options.Items[0].IsPlaceHolder??false)
             {
-                // play a phyical disk in the cdrom drive
-                // Will be re-entrant call, so has to be made befpre the interlocked.CompareExchange below
+                // play a physical disk in the CD-ROM drive
+                // Will be re-entrant call, so has to be made before the interlocked.CompareExchange below
                 await PlayExternalDisk(true);
                 return;
             }
@@ -165,6 +167,8 @@ namespace MediaBrowser.Theater.Implementations.Playback
         /// <param name="options">The options.</param>
         private async void OnPlaybackStarted(IMediaPlayer player, PlayOptions options)
         {
+            CurrentMediaPlayer = player;
+
             EventHelper.QueueEventIfNotNull(PlaybackStarted, this, new PlaybackStartEventArgs
             {
                 Options = options,
@@ -180,6 +184,8 @@ namespace MediaBrowser.Theater.Implementations.Playback
         /// <param name="eventArgs">The <see cref="PlaybackStopEventArgs"/> instance containing the event data.</param>
         public async void ReportPlaybackCompleted(PlaybackStopEventArgs eventArgs)
         {
+            CurrentMediaPlayer = null;
+
             await _presentationManager.Window.Dispatcher.InvokeAsync(() => _presentationManager.WindowOverlay.SetResourceReference(FrameworkElement.StyleProperty, "WindowBackgroundContent"));
 
             EventHelper.QueueEventIfNotNull(PlaybackCompleted, this, eventArgs, _logger);
@@ -199,6 +205,8 @@ namespace MediaBrowser.Theater.Implementations.Playback
             {
                 player.Stop();
             }
+
+            CurrentMediaPlayer = null;
         }
 
         private async Task PlayDisc(DriveInfo drive)

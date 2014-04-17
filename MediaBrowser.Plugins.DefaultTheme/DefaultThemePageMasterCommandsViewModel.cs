@@ -9,6 +9,7 @@ using MediaBrowser.Plugins.DefaultTheme.ListPage;
 using MediaBrowser.Plugins.DefaultTheme.NowPlayingMenu;
 using MediaBrowser.Plugins.DefaultTheme.UserProfileMenu;
 using MediaBrowser.Theater.Interfaces;
+using MediaBrowser.Theater.Interfaces.Playback;
 using MediaBrowser.Theater.Interfaces.Presentation;
 using MediaBrowser.Theater.Interfaces.ViewModels;
 using MediaBrowser.Theater.Interfaces.Navigation;
@@ -21,6 +22,7 @@ namespace MediaBrowser.Plugins.DefaultTheme
     public class DefaultThemePageMasterCommandsViewModel : MasterCommandsViewModel
     {
         protected readonly IImageManager ImageManager;
+        protected readonly IPlaybackManager PlaybackManager;
 
         public ICommand UserCommand { get; private set; }
         public ICommand LogoutCommand { get; private set; }
@@ -77,10 +79,12 @@ namespace MediaBrowser.Plugins.DefaultTheme
             }
         }
 
-        public DefaultThemePageMasterCommandsViewModel(INavigationService navigationService, ISessionManager sessionManager, IPresentationManager presentationManager, IApiClient apiClient, ILogger logger, ITheaterApplicationHost appHost, IServerEvents serverEvents, IImageManager imageManager) 
+        public DefaultThemePageMasterCommandsViewModel(INavigationService navigationService, ISessionManager sessionManager, IPresentationManager presentationManager, 
+            IApiClient apiClient, ILogger logger, ITheaterApplicationHost appHost, IServerEvents serverEvents, IImageManager imageManager, IPlaybackManager playbackManager) 
             : base(navigationService, sessionManager, presentationManager, apiClient, logger, appHost, serverEvents)
         {
             ImageManager = imageManager;
+            PlaybackManager = playbackManager;
 
             UserCommand = new RelayCommand(i => ShowUserMenu());
             LogoutCommand = new RelayCommand(i => Logout());
@@ -117,7 +121,7 @@ namespace MediaBrowser.Plugins.DefaultTheme
 
         protected virtual void ShowNowPlaying()
         {
-            var nowPlayingWindow = new NowPlayingWindow();
+            var nowPlayingWindow = new NowPlayingWindow(PlaybackManager);
             nowPlayingWindow.ShowModal(PresentationManager.Window);
         }
 

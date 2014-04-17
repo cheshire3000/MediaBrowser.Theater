@@ -85,6 +85,12 @@ namespace MediaBrowser.Theater.Interfaces.Playback
         IEnumerable<IMediaPlayer> MediaPlayers { get; }
 
         /// <summary>
+        /// Gets the media player currently playing. Null if nothing currently playing
+        /// </summary>
+        /// <value>The current media player.</value>
+        IMediaPlayer CurrentMediaPlayer { get; }
+
+        /// <summary>
         /// Plays the specified options.
         /// </summary>
         /// <param name="options">The options.</param>

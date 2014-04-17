@@ -14,36 +14,6 @@
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-        <Storyboard x:Key="OpeningViewGridStoryboard">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ViewGrid" Storyboard.TargetProperty="Width">
-                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                <EasingDoubleKeyFrame Value="500" KeyTime="00:00:0.5">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut"/>
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="ClosingViewGridStoryboard">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ViewGrid" Storyboard.TargetProperty="Width">
-                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="OpeningSortGridStoryboard">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SortGrid" Storyboard.TargetProperty="Width">
-                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                <EasingDoubleKeyFrame Value="500" KeyTime="00:00:0.5">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <QuinticEase EasingMode="EaseInOut"/>
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="ClosingSortGridStoryboard">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SortGrid" Storyboard.TargetProperty="Width">
-                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
     </Window.Resources>
     <Grid x:Name="MainGrid">
         <Grid Style="{StaticResource ModalOverlayStyle}">
@@ -69,7 +39,7 @@
                 </EventTrigger>
             </Grid.Triggers>
 
-            <Button x:Name="BtnClose" Style="{StaticResource ModalCloseButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="40" Margin="35 0 0 0" TabIndex="99"/>
+            <Button Style="{StaticResource ModalCloseButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="40" Margin="35 35 0 0" TabIndex="99" Command="{Binding CloseCommand}"/>
 
             <Grid Margin="0 30 0 0" MinWidth="500">
             </Grid>
