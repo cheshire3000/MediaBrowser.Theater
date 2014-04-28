@@ -1,4 +1,5 @@
 ﻿using MediaBrowser.Common.Events;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Model.ApiClient;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
@@ -8,14 +9,13 @@ using MediaBrowser.Theater.Interfaces.Configuration;
 using MediaBrowser.Theater.Interfaces.Playback;
 using MediaBrowser.Theater.Interfaces.Presentation;
 using MediaBrowser.Theater.Interfaces.Session;
+using MediaBrowser.Theater.Interfaces.UserInput;
 using MediaBrowser.Theater.Presentation.Playback;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Management;
-using MediaBrowser.Theater.Interfaces.UserInput;
 
 namespace MediaBrowser.Theater.DirectShow
 {
@@ -32,6 +32,8 @@ namespace MediaBrowser.Theater.DirectShow
         private readonly ITheaterConfigurationManager _config;
         private readonly IIsoManager _isoManager;
         private readonly IUserInputManager _inputManager;
+        private readonly IHttpClient _httpClient;
+        private readonly IZipClient _zipClient;
 
         public event EventHandler<MediaChangeEventArgs> MediaChanged;
 
@@ -39,17 +41,19 @@ namespace MediaBrowser.Theater.DirectShow
 
         private List<BaseItemDto> _playlist = new List<BaseItemDto>();
 
-        public InternalDirectShowPlayer(ILogManager logManager, IHiddenWindow hiddenWindow, IPresentationManager presentation, ISessionManager sessionManager, IApiClient apiClient, IPlaybackManager playbackManager, ITheaterConfigurationManager config, IIsoManager isoManager, IUserInputManager inputManager)
+        public InternalDirectShowPlayer(ILogManager logManager, IHiddenWindow hiddenWindow, IPresentationManager presentation, ISessionManager sessionManager, IApiClient apiClient, IPlaybackManager playbackManager, ITheaterConfigurationManager config, IIsoManager isoManager, IUserInputManager inputManager, IZipClient zipClient, IHttpClient httpClient)
         {
             _logger = logManager.GetLogger("InternalDirectShowPlayer");
             _hiddenWindow = hiddenWindow;
             _presentation = presentation;
             _sessionManager = sessionManager;
             _apiClient = apiClient;
+            _httpClient = httpClient;
             _playbackManager = playbackManager;
             _config = config;
             _isoManager = isoManager;
             _inputManager = inputManager;
+            _zipClient = zipClient;
         }
 
         public IReadOnlyList<BaseItemDto> Playlist
@@ -88,6 +92,23 @@ namespace MediaBrowser.Theater.DirectShow
         }
 
         public bool CanTrackProgress
+        {
+            get { return true; }
+        }
+
+
+        public bool CanSetAudioStreamIndex
+        {
+            get { return true; }
+        }
+
+
+        public bool CanSetSubtitleStreamIndex
+        {
+            get { return true; }
+        }
+
+        public bool CanAcceptNavigationCommands
         {
             get { return true; }
         }
@@ -180,7 +201,7 @@ namespace MediaBrowser.Theater.DirectShow
             {
                 InvokeOnPlayerThread(() =>
                 {
-                    _mediaPlayer = new DirectShowPlayer(_logger, _hiddenWindow, this, _presentation.WindowHandle, _sessionManager, _config, _inputManager);
+                    _mediaPlayer = new DirectShowPlayer(_logger, _hiddenWindow, this, _presentation.WindowHandle, _sessionManager, _config, _inputManager, _apiClient, _zipClient, _httpClient);
 
                     //HideCursor();
                 });
@@ -210,9 +231,9 @@ namespace MediaBrowser.Theater.DirectShow
             try
             {
                 var enableMadVr = EnableMadvr(options);
-                var enableReclock = EnableReclock(options);
+                //var enableReclock = EnableReclock(options);
 
-                InvokeOnPlayerThread(() => _mediaPlayer.Play(playableItem, enableReclock, enableMadVr, false));
+                InvokeOnPlayerThread(() => _mediaPlayer.Play(playableItem, enableMadVr, false));
             }
             catch
             {
@@ -285,7 +306,7 @@ namespace MediaBrowser.Theater.DirectShow
                 return false;
             }
 
-            if (!_config.Configuration.InternalPlayerConfiguration.EnableMadvr)
+            if (!_config.Configuration.InternalPlayerConfiguration.VideoConfig.EnableMadvr)
             {
                 return false;
             }
@@ -303,27 +324,27 @@ namespace MediaBrowser.Theater.DirectShow
         /// </summary>
         /// <param name="options">The options.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        private bool EnableReclock(PlayOptions options)
-        {
-            var video = options.Items.First();
+        //private bool EnableReclock(PlayOptions options)
+        //{
+        //    var video = options.Items.First();
 
-            if (!video.IsVideo)
-            {
-                return false;
-            }
+        //    if (!video.IsVideo)
+        //    {
+        //        return false;
+        //    }
 
-            if (!_config.Configuration.InternalPlayerConfiguration.EnableReclock)
-            {
-                return false;
-            }
+        //    if (!_config.Configuration.InternalPlayerConfiguration.EnableReclock)
+        //    {
+        //        return false;
+        //    }
 
-            if (!options.GoFullScreen)
-            {
-                return false;
-            }
+        //    if (!options.GoFullScreen)
+        //    {
+        //        return false;
+        //    }
             
-            return true;
-        }
+        //    return true;
+        //}
 
         private void DisposePlayer()
         {
@@ -465,9 +486,30 @@ namespace MediaBrowser.Theater.DirectShow
             InvokeOnPlayerThread(() => _mediaPlayer.SetAudioTrack(track));
         }
 
+      
+        public void SetSubtitleStreamIndex(int subtitleStreamIndex)
+        {
+            InvokeOnPlayerThread(() => _mediaPlayer.SetSubtitleStreamIndex(subtitleStreamIndex));
+        }
+
+        public void NextSubtitleStream()
+        {
+            InvokeOnPlayerThread(() => _mediaPlayer.NextSubtitleStream());
+        }
+      
+        public void SetAudioStreamIndex(int audioStreamIndex)
+        {
+            InvokeOnPlayerThread(() => _mediaPlayer.SetAudioStreamIndex(audioStreamIndex));
+        }
+
+        public void NextAudioStream()
+        {
+            InvokeOnPlayerThread(() => _mediaPlayer.NextAudioStream());
+        }
+
         public void ChangeSubtitleStream(SelectableMediaStream track)
         {
-            InvokeOnPlayerThread(() => _mediaPlayer.SetSubtitleTrack(track));
+            InvokeOnPlayerThread(() => _mediaPlayer.SetSubtitleStream(track));
         }
 
         public void RemoveSubtitles()

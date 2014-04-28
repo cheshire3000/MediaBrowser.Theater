@@ -154,43 +154,39 @@ namespace MediaBrowser.UI
             // Restore window position/size
             if (config.WindowState.HasValue)
             {
+                double left = 0;
+                double top = 0;
+
+                // Set left
+                if (config.WindowLeft.HasValue)
+                {
+                    win.WindowStartupLocation = WindowStartupLocation.Manual;
+                    startPosition = System.Windows.Forms.FormStartPosition.Manual;
+                    win.Left = left = Math.Max(config.WindowLeft.Value, 0);
+                }
+
+                // Set top
+                if (config.WindowTop.HasValue)
+                {
+                    win.WindowStartupLocation = WindowStartupLocation.Manual;
+                    startPosition = System.Windows.Forms.FormStartPosition.Manual;
+                    win.Top = top = Math.Max(config.WindowTop.Value, 0);
+                }
+
+                // Set width
+                if (config.WindowWidth.HasValue)
+                {
+                    win.Width = Math.Min(config.WindowWidth.Value, SystemParameters.VirtualScreenWidth - left);
+                }
+
+                // Set height
+                if (config.WindowHeight.HasValue)
+                {
+                    win.Height = Math.Min(config.WindowHeight.Value, SystemParameters.VirtualScreenHeight - top);
+                }
+
                 // Set window state
                 win.WindowState = config.WindowState.Value;
-
-                // Set position if not maximized
-                if (config.WindowState.Value != WindowState.Maximized)
-                {
-                    double left = 0;
-                    double top = 0;
-
-                    // Set left
-                    if (config.WindowLeft.HasValue)
-                    {
-                        win.WindowStartupLocation = WindowStartupLocation.Manual;
-                        startPosition = System.Windows.Forms.FormStartPosition.Manual;
-                        win.Left = left = Math.Max(config.WindowLeft.Value, 0);
-                    }
-
-                    // Set top
-                    if (config.WindowTop.HasValue)
-                    {
-                        win.WindowStartupLocation = WindowStartupLocation.Manual;
-                        startPosition = System.Windows.Forms.FormStartPosition.Manual;
-                        win.Top = top = Math.Max(config.WindowTop.Value, 0);
-                    }
-
-                    // Set width
-                    if (config.WindowWidth.HasValue)
-                    {
-                        win.Width = Math.Min(config.WindowWidth.Value, SystemParameters.VirtualScreenWidth - left);
-                    }
-
-                    // Set height
-                    if (config.WindowHeight.HasValue)
-                    {
-                        win.Height = Math.Min(config.WindowHeight.Value, SystemParameters.VirtualScreenHeight - top);
-                    }
-                }
             }
 
             ApplicationWindow = win;
@@ -588,7 +584,8 @@ namespace MediaBrowser.UI
             }
             
             //Try and wait for WOL if its configured
-            if (!foundServer && _appHost.TheaterConfigurationManager.Configuration.WolConfiguration.HostMacAddresses.Count > 0)
+            if (!foundServer && _appHost.TheaterConfigurationManager.Configuration.WolConfiguration != null
+                && _appHost.TheaterConfigurationManager.Configuration.WolConfiguration.HostMacAddresses.Count > 0)
             {
                 for (var i = 0; i < _appHost.TheaterConfigurationManager.Configuration.WolConfiguration.WakeAttempts; i++)
                 {
