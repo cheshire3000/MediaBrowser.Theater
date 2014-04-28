@@ -41,7 +41,10 @@
 
             <Button Style="{StaticResource ModalCloseButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="40" Margin="35 35 0 0" TabIndex="99" Command="{Binding CloseCommand}"/>
 
-            <Grid Margin="0 30 0 0" MinWidth="500">
+            <Grid Margin="0 35 0 0" MinWidth="500">
+                <Grid Margin="20,40,20,20"> 
+                    
+                </Grid>
             </Grid>
         </Grid>
 
