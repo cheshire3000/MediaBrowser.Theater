@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Windows.Media.Animation;
+using MediaBrowser.Model.ApiClient;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Theater.Interfaces.Playback;
+using MediaBrowser.Theater.Interfaces.Presentation;
+using MediaBrowser.Theater.Interfaces.Session;
 using MediaBrowser.Theater.Presentation.Controls;
 
 namespace MediaBrowser.Plugins.DefaultTheme.NowPlayingMenu
@@ -9,10 +13,11 @@ namespace MediaBrowser.Plugins.DefaultTheme.NowPlayingMenu
     {
         private readonly NowPlayingWindowViewModel _viewModel;
 
-        public NowPlayingWindow(IPlaybackManager playbackManager)
+        public NowPlayingWindow(ILogger logger, IPresentationManager presentationManager, ISessionManager sessionManager, IPlaybackManager playbackManager, IApiClient apiClient, IImageManager imageManager, IServerEvents serverEvents)
         {
             InitializeComponent();
-            _viewModel = new NowPlayingWindowViewModel(playbackManager);
+            _viewModel = new NowPlayingWindowViewModel(logger, presentationManager, sessionManager, playbackManager, apiClient,
+                imageManager, serverEvents);
             _viewModel.CloseDialogRequested += ViewModel_CloseDialogRequested;
             DataContext = _viewModel;
         }
