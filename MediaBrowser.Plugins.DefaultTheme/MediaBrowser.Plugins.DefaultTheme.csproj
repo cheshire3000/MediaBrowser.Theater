@@ -134,10 +134,10 @@
       <DependentUpon>NowPlayingInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Apps\PlayExternalDisc.cs" />
-    <Compile Include="NowPlayingMenu\NowPlayingWindow.xaml.cs">
-      <DependentUpon>NowPlayingWindow.xaml</DependentUpon>
+    <Compile Include="PlaylistViewer\PlaylistWindow.xaml.cs">
+      <DependentUpon>PlaylistWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NowPlayingMenu\NowPlayingWindowViewModel.cs" />
+    <Compile Include="PlaylistViewer\PlaylistWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -252,7 +252,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="NowPlayingMenu\NowPlayingWindow.xaml">
+    <Page Include="PlaylistViewer\PlaylistWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

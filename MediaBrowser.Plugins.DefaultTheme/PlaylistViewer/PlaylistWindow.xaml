@@ -1,0 +1,137 @@
+﻿<controls:BaseModalWindow x:Class="MediaBrowser.Plugins.DefaultTheme.PlaylistViewer.PlaylistWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:MediaBrowser.Theater.Presentation.Controls;assembly=MediaBrowser.Theater.Presentation"
+        xmlns:viewModels="clr-namespace:MediaBrowser.Theater.Presentation.ViewModels;assembly=MediaBrowser.Theater.Presentation"
+        Title="PlayListViewerWindow" Height="300" Width="300" Style="{StaticResource ModalWindow}" Cursor="None">
+    <Window.Resources>
+        <Storyboard x:Key="ClosingModalStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentGrid"  Storyboard.TargetProperty="Width">
+                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="500"/>
+                <EasingDoubleKeyFrame Value="0" KeyTime="00:00:0.5">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <QuinticEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <Style TargetType="controls:ExtendedListBox" x:Key="PlaylistListBoxStyle" BasedOn="{StaticResource ListBoxStyle}">
+            <Setter Property="IsSynchronizedWithCurrentItem" Value="True"/>
+            <Setter Property="ItemTemplate" Value="{DynamicResource PlaylistListItemTemplate}"/>
+            <!--<Setter Property="ItemContainerStyle" Value="{DynamicResource PlaylistListItemStyle}"/>-->
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        </VirtualizingStackPanel>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="PlaylistListItemTemplate">
+            <Grid>
+                <TextBlock Style="{StaticResource Heading2TextBlockStyle}"  MaxWidth="200" TextWrapping="NoWrap" Text="test" VerticalAlignment="Center"/>
+                <TextBlock Style="{StaticResource Heading2TextBlockStyle}"  MaxWidth="200" TextWrapping="NoWrap" Text="{Binding DisplayName}" VerticalAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+
+        <Style x:Key="PlaylistListItemStyle" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource BaseListBoxItemStyle}">
+            <Setter Property="CacheMode">
+                <Setter.Value>
+                    <BitmapCache EnableClearType="True" RenderAtScale="1" SnapsToDevicePixels="True"  />
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="Stretch" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Stretch"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="#a6000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid x:Name="MainGrid">
+        <Grid Style="{StaticResource ModalOverlayStyle}">
+
+        </Grid>
+
+        <Grid x:Name="ContentGrid" Style="{StaticResource DefaultThemeModalContentStyle}" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+            <!-- Animation -->
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Width">
+                                <SplineDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                                <EasingDoubleKeyFrame Value="500" KeyTime="00:00:0.5">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <QuinticEase EasingMode="EaseInOut"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
+
+            <Button Style="{StaticResource ModalCloseButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="40" Margin="35 35 0 0" TabIndex="99" Command="{Binding CloseCommand}"/>
+
+            <Grid Margin="0 35 0 0" MinWidth="500">
+                <Grid Margin="35,70,20,20">
+                    <Grid VerticalAlignment="Top">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource TextBlockStyle}" VerticalAlignment="Center">Now</TextBlock>
+                                <TextBlock Style="{StaticResource TextBlockStyle}" VerticalAlignment="Center" Foreground="{StaticResource MediaBrowserAccent}">Playing</TextBlock>
+                            </StackPanel>
+
+                            <Border Margin="0,20,0,0">
+                                <Grid>
+                                    <controls:ExtendedButton Style="{StaticResource BaseItemButtonStyle}" HorizontalAlignment="Center">
+                                        <Grid>
+                                            <Image Stretch="Uniform" MaxWidth="500" MaxHeight="250" Source="{Binding CurrentItem.Image}"/>
+                                        </Grid>
+                                    </controls:ExtendedButton>
+                                </Grid>
+                            </Border>
+                            
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Heading2TextBlockStyle}"  MaxWidth="200" TextWrapping="NoWrap" Text="{Binding CurrentItem.DisplayName}" VerticalAlignment="Center"/>
+                                <ProgressBar Margin="10,0,0,0" Minimum="0" Maximum="100" Value="{Binding CurrentItem.PlayedPercentage, Mode=OneWay}" Width="100" Height="24" Style="{DynamicResource ResumeProgressBar}" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,40,0,0">
+                                <TextBlock Style="{StaticResource TextBlockStyle}" VerticalAlignment="Center">Up</TextBlock>
+                                <TextBlock Style="{StaticResource TextBlockStyle}" VerticalAlignment="Center" Foreground="{StaticResource MediaBrowserAccent}">Next</TextBlock>
+                            </StackPanel>
+
+                            <Grid Margin="0,20,0,0">
+                                <controls:ExtendedScrollViewer HorizontalAlignment="Stretch" KeyboardNavigation.IsTabStop="False" Focusable="False" VerticalAlignment="Stretch" CanContentScroll="True">
+                                    <controls:ScrollingPanel>
+                                        <controls:ExtendedListBox Style="{StaticResource PlaylistListBoxStyle}" ItemsSource="{Binding CurrentPlayer.Playlist}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
+                                    </controls:ScrollingPanel>
+                                </controls:ExtendedScrollViewer>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </Grid>  
+
+        <Grid.LayoutTransform>
+            <ScaleTransform ScaleX="{Binding Path=ContentScale}" ScaleY="{Binding Path=ContentScale}" CenterX="0" CenterY="0" />
+        </Grid.LayoutTransform>
+    </Grid>
+</controls:BaseModalWindow>

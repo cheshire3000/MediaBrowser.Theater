@@ -7,13 +7,13 @@ using MediaBrowser.Theater.Interfaces.Presentation;
 using MediaBrowser.Theater.Interfaces.Session;
 using MediaBrowser.Theater.Presentation.Controls;
 
-namespace MediaBrowser.Plugins.DefaultTheme.NowPlayingMenu
+namespace MediaBrowser.Plugins.DefaultTheme.PlaylistViewer
 {
-    public partial class NowPlayingWindow : BaseModalWindow
+    public partial class PlaylistWindow : BaseModalWindow
     {
         private readonly NowPlayingWindowViewModel _viewModel;
 
-        public NowPlayingWindow(ILogger logger, IPresentationManager presentationManager, ISessionManager sessionManager, IPlaybackManager playbackManager, IApiClient apiClient, IImageManager imageManager, IServerEvents serverEvents)
+        public PlaylistWindow(ILogger logger, IPresentationManager presentationManager, ISessionManager sessionManager, IPlaybackManager playbackManager, IApiClient apiClient, IImageManager imageManager, IServerEvents serverEvents)
         {
             InitializeComponent();
             _viewModel = new NowPlayingWindowViewModel(logger, presentationManager, sessionManager, playbackManager, apiClient,

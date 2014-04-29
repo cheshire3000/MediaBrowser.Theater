@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Windows.Input;
-using System.Xml.Serialization;
-using MediaBrowser.Common;
 using MediaBrowser.Model.ApiClient;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.DefaultTheme.ListPage;
-using MediaBrowser.Plugins.DefaultTheme.NowPlayingMenu;
+using MediaBrowser.Plugins.DefaultTheme.PlaylistViewer;
 using MediaBrowser.Plugins.DefaultTheme.UserProfileMenu;
 using MediaBrowser.Theater.Interfaces;
 using MediaBrowser.Theater.Interfaces.Playback;
@@ -23,7 +21,6 @@ namespace MediaBrowser.Plugins.DefaultTheme
     {
         protected readonly IImageManager ImageManager;
         protected readonly IPlaybackManager PlaybackManager;
-        protected readonly IServerEvents ServerEvents;
 
         public ICommand UserCommand { get; private set; }
         public ICommand LogoutCommand { get; private set; }
@@ -86,7 +83,6 @@ namespace MediaBrowser.Plugins.DefaultTheme
         {
             ImageManager = imageManager;
             PlaybackManager = playbackManager;
-            ServerEvents = serverEvents;
 
             UserCommand = new RelayCommand(i => ShowUserMenu());
             LogoutCommand = new RelayCommand(i => Logout());
@@ -123,7 +119,7 @@ namespace MediaBrowser.Plugins.DefaultTheme
 
         protected virtual void ShowNowPlaying()
         {
-            var nowPlayingWindow = new NowPlayingWindow(Logger, PresentationManager, SessionManager, PlaybackManager, ApiClient, ImageManager, ServerEvents);
+            var nowPlayingWindow = new PlaylistWindow(Logger, PresentationManager, SessionManager, PlaybackManager, ApiClient, ImageManager, ServerEvents);
             nowPlayingWindow.ShowModal(PresentationManager.Window);
         }
 
